@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.snake.Piece;
-import edu.wpi.first.hal.simulation.SimulatorJNI;
 import frc.robot.snake.Coord;
 import frc.robot.snake.Direction;
 
@@ -23,11 +22,20 @@ import frc.robot.snake.Direction;
  */
 public final class Constants {
   /**
-   * Actual side length of each square in "meters"
+   * Actual side length of each square in "meters." You'll have to set the
+   * actual size of all the objects to 1 meter yourself.
    */
   public static final double BLOCK_SIZE = 1;
 
+  /**
+   * Field width, in blocks.
+   * Be sure to set the Field object's width to FIELD_WIDTH * BLOCK_SIZE yourself.
+   */
   public static final int FIELD_WIDTH = 16;
+  /**
+   * Field height, in blocks.
+   * Be sure to set the Field object's height to FIELD_HEIGHT * BLOCK_SIZE yourself.
+   */
   public static final int FIELD_HEIGHT = 8;
 
   /**
