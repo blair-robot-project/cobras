@@ -8,6 +8,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.snake.Coord;
+import frc.robot.snake.Direction;
+import frc.robot.snake.Piece;
+import frc.robot.snake.Snake;
 import frc.robot.snake.SnakeCommand;
 
 public class RobotContainer {
@@ -27,6 +31,7 @@ public class RobotContainer {
   }
 
   public Command getTeleopCommand() {
-    return new SnakeCommand(field, joystick);
+    var snake = new Snake(Constants.CENTER);
+    return new SnakeCommand(snake, field, joystick);
   }
 }

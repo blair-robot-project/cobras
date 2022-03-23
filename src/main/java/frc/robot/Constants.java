@@ -4,12 +4,20 @@
 
 package frc.robot;
 
+import frc.robot.snake.Piece;
+import frc.robot.snake.Coord;
+import frc.robot.snake.Direction;
+
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -17,6 +25,14 @@ public final class Constants {
 
   public static final int FIELD_WIDTH = 20;
   public static final int FIELD_HEIGHT = 10;
+
+  /**
+   * The place in the center of the field, with a rotation of 0 degs
+   */
+  public static final Piece CENTER =
+    new Piece(
+      new Coord(FIELD_WIDTH / 2, FIELD_HEIGHT / 2),
+      Direction.RIGHT);
 
   /**
    * How many seconds the game should pause before moving
@@ -40,7 +56,11 @@ public final class Constants {
    */
   public static final String CURVE_NAME = "SnakeCurve";
   /**
-   * The name for the apple pose in Field2d
+   * The name for the apple in Field2d
    */
   public static final String APPLE_NAME = "Apple";
+  /**
+   * The name for the Game Over message in Field2d
+   */
+  public static final String GAME_OVER_NAME = "GameOver";
 }

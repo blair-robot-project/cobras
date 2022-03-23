@@ -5,9 +5,7 @@
 package frc.robot.snake;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,45 +14,39 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import static frc.robot.Constants.*;
 
 /** An example command that uses an example subsystem. */
 public class SnakeCommand extends CommandBase {
-  private Piece head;
-  private Piece tail;
-  private Direction currDir;
+  /**
+   * The Snake "subsystem" on which to run the game
+   */
+  private final Snake snake;
   private Coord apple;
   private double lastTime = Double.NaN;
-  /**
-   * The pieces representing the snake's body
-   */
-  private final List<Piece> body = new ArrayList<>();
   private final Field2d field;
   private final GenericHID joystick;
 
   /**
    * @param field The field object on which to display the game
    */
-  public SnakeCommand(Field2d field, GenericHID joystick) {
+  public SnakeCommand(Snake snake, Field2d field, GenericHID joystick) {
     this.field = field;
     this.joystick = joystick;
+    this.snake = snake;
+    addRequirements(snake);
   }
 
   @Override
   public void initialize() {
-    this.head = new Piece(
-        new Coord(FIELD_WIDTH / 2, FIELD_HEIGHT / 2),
-        Direction.RIGHT);
-    this.tail = new Piece(
-        new Coord(FIELD_WIDTH / 2 - 1, FIELD_HEIGHT / 2),
-        Direction.RIGHT);
     this.apple = newApple();
-    this.currDir = head.dir;
 
-    // Get that pesky robot out of sight
+    // Get that pesky robot and message out of sight
     field.setRobotPose(new Pose2d(new Translation2d(-9, -9), new Rotation2d()));
+    field
+      .getObject(GAME_OVER_NAME)
+      .setPose(new Pose2d(new Translation2d(-9, -9), new Rotation2d()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,7 +54,7 @@ public class SnakeCommand extends CommandBase {
   public void execute() {
     var currTime = Timer.getFPGATimestamp();
     var newDir = povToDir(joystick.getPOV());
-    currDir = newDir.filter(dir -> !dir.opposite(currDir)).orElse(currDir);
+    newDir.filter(dir -> !dir.opposite(snake.getDir())).ifPresent(snake::setDir);
 
     this.redraw();
 
@@ -70,21 +62,10 @@ public class SnakeCommand extends CommandBase {
     if (Double.isNaN(lastTime) || currTime - lastTime > PAUSE) {
       this.lastTime = currTime;
 
-      body.add(0, head);
-
-      this.head = head.move(currDir);
-
-      if (apple.equals(head.pos)) {
+      var ateApple = snake.willCollide(apple);
+      snake.move(ateApple);
+      if (ateApple) {
         this.apple = newApple();
-      } else {
-        // Remove the last piece to give the illusion of motion
-        var last = body.remove(body.size() - 1);
-        // Make the tail follow the last piece
-        if (body.isEmpty()) {
-          this.tail = new Piece(last.pos, head.dir);
-        } else {
-          this.tail = new Piece(last.pos, body.get(body.size() - 1).dir);
-        }
       }
     }
   }
@@ -93,8 +74,8 @@ public class SnakeCommand extends CommandBase {
    * Draw the poses for the snake head, body, and apple
    */
   private void redraw() {
-    field.getObject(HEAD_NAME).setPose(head.getPose());
-    field.getObject(TAIL_NAME).setPose(tail.getPose());
+    field.getObject(HEAD_NAME).setPose(snake.getHead().getPose());
+    field.getObject(TAIL_NAME).setPose(snake.getTail().getPose());
     field
         .getObject(APPLE_NAME)
         .setPose(new Piece(apple, Direction.RIGHT).getPose());
@@ -102,8 +83,8 @@ public class SnakeCommand extends CommandBase {
     var bodyPoses = new ArrayList<Pose2d>();
     var curvePoses = new ArrayList<Pose2d>();
 
-    var prev = head;
-    for (var piece : body) {
+    var prev = snake.getHead();
+    for (var piece : snake.getBody()) {
       bodyPoses.add(piece.getPose());
       if (prev.dir != piece.dir) {
         // Draw a curvy part to make it look smoother
@@ -127,9 +108,12 @@ public class SnakeCommand extends CommandBase {
     field.getObject(BODY_NAME).setPoses(bodyPoses);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if (!interrupted) {
+      field.getObject(GAME_OVER_NAME).setPose(CENTER.getPose());
+      this.redraw();
+    }
   }
 
   /**
@@ -139,10 +123,10 @@ public class SnakeCommand extends CommandBase {
     int x = (int) (Math.random() * FIELD_WIDTH);
     int y = (int) (Math.random() * FIELD_HEIGHT);
     var coord = new Coord(x, y);
-    if (coord.equals(head.pos)) {
+    if (coord.equals(snake.getHead().pos)) {
       return newApple();
     }
-    for (var piece : body) {
+    for (var piece : snake.getBody()) {
       if (coord.equals(piece.pos)) {
         return newApple();
       }
@@ -171,9 +155,28 @@ public class SnakeCommand extends CommandBase {
     }
   }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    var movedHead = snake.getHead().move(snake.getDir());
+    if (movedHead.pos.x < 0
+        || movedHead.pos.y < 0
+        || movedHead.pos.x > FIELD_WIDTH
+        || movedHead.pos.y > FIELD_HEIGHT) {
+      System.out.println("Hit edge of field");
+      return true;
+    }
+
+    if (snake.willCollide(snake.getTail().pos)) {
+      System.out.println("Hit tail");
+      return true;
+    }
+    for (var piece : snake.getBody()) {
+      if (snake.willCollide(piece.pos)) {
+        System.out.println("Hit body part (" + piece.pos + ")");
+        return true;
+      }
+    }
+
     return false;
   }
 }

@@ -18,6 +18,9 @@ public class Coord {
     this.y = y;
   }
 
+  /**
+   * Override equals so we can compare coordinates
+   */
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Coord) {
@@ -25,5 +28,13 @@ public class Coord {
       return other.x == this.x && other.y == this.y;
     }
     return false;
+  }
+
+  /**
+   * Override toString so we can print out coordinates
+   */
+  @Override
+  public String toString() {
+    return "Coord(" + x + ", " + y + ")";
   }
 }

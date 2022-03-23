@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Snake": "Subsystem",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Field": "Field2d"
     },
@@ -11,6 +12,11 @@
           "image": "src\\main\\resources\\img\\apple.png",
           "length": 0.699999988079071,
           "width": 0.699999988079071
+        },
+        "GameOver": {
+          "image": "src\\main\\resources\\img\\game_over.png",
+          "length": 7.0,
+          "width": 2.5
         },
         "SnakeBody": {
           "image": "src\\main\\resources\\img\\snake_body.png",

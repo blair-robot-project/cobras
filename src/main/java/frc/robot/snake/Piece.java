@@ -35,7 +35,9 @@ public class Piece {
    */
   public static Pose2d getPose(Coord pos, double angle) {
     return new Pose2d(
-      new Translation2d(pos.x * Constants.BLOCK_SIZE, pos.y * Constants.BLOCK_SIZE),
+      new Translation2d(
+        pos.x * Constants.BLOCK_SIZE + Constants.BLOCK_SIZE / 2,
+        pos.y * Constants.BLOCK_SIZE + Constants.BLOCK_SIZE / 2),
       Rotation2d.fromDegrees(angle));
   }
 
