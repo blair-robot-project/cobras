@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import static frc.robot.Constants.*;
@@ -162,7 +163,7 @@ public class SnakeCommand extends CommandBase {
         || movedHead.pos.y < 0
         || movedHead.pos.x > FIELD_WIDTH
         || movedHead.pos.y > FIELD_HEIGHT) {
-      System.out.println("Hit edge of field");
+      System.out.println("Hit edge of field (pos = " + movedHead.pos + ")");
       return true;
     }
 
