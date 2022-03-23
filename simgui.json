@@ -9,34 +9,34 @@
     "windows": {
       "/SmartDashboard/Field": {
         "Apple": {
-          "image": "src\\main\\resources\\img\\apple.png",
+          "image": "img\\apple.png",
           "length": 0.699999988079071,
           "width": 0.699999988079071
         },
         "GameOver": {
-          "image": "src\\main\\resources\\img\\game_over.png",
+          "image": "game_over.png",
           "length": 7.0,
           "width": 2.5
         },
         "SnakeBody": {
-          "image": "src\\main\\resources\\img\\snake_body.png",
+          "image": "img\\snake_body.png",
           "length": 0.699999988079071,
           "style": "Box/Image",
           "weight": 2.0,
           "width": 0.699999988079071
         },
         "SnakeCurve": {
-          "image": "src\\main\\resources\\img\\snake_curve.png",
+          "image": "img\\snake_curve.png",
           "length": 0.699999988079071,
           "width": 0.699999988079071
         },
         "SnakeHead": {
-          "image": "src\\main\\resources\\img\\snake_head.png",
+          "image": "img\\snake_head.png",
           "length": 0.699999988079071,
           "width": 0.699999988079071
         },
         "SnakeTail": {
-          "image": "src\\main\\resources\\img\\snake_tail.png"
+          "image": "img\\snake_tail.png"
         },
         "window": {
           "visible": true
