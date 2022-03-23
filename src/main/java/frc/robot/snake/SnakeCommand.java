@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 import static frc.robot.Constants.*;
 
@@ -158,27 +159,16 @@ public class SnakeCommand extends CommandBase {
   private Optional<Direction> povToDir(int pov) {
     switch (pov) {
       case 0:
-        return Optional.of(Direction.UP);
-      case 90:
         return Optional.of(Direction.RIGHT);
+      case 90:
+        return Optional.of(Direction.UP);
       case 180:
-        return Optional.of(Direction.DOWN);
-      case 270:
         return Optional.of(Direction.LEFT);
+      case 270:
+        return Optional.of(Direction.DOWN);
       default:
         return Optional.empty();
     }
-  }
-
-  /**
-   * Check if {@code dir1} and {@code dir2} are both in the set {{@code wanted1},
-   * {@code wanted2}}.
-   * This is an inelegant but handy method to check if two angles are opposite
-   * each other or
-   * which quadrant two angles enclose.
-   */
-  private boolean bothIn(Direction dir1, Direction dir2, Direction wanted1, Direction wanted2) {
-    return (dir1 == wanted1 && dir2 == wanted2) || (dir1 == wanted2 && dir2 == wanted1);
   }
 
   // Returns true when the command should end.
