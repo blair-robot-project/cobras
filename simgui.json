@@ -7,10 +7,38 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "Apple": {
+          "image": "C:\\Users\\yasht\\snake-sim\\src\\main\\resources\\img\\apple.png",
+          "length": 0.699999988079071,
+          "width": 0.699999988079071
+        },
+        "SnakeBody": {
+          "image": "C:\\Users\\yasht\\snake-sim\\src\\main\\resources\\img\\snake_body.png",
+          "length": 0.699999988079071,
+          "style": "Box/Image",
+          "weight": 2.0,
+          "width": 0.699999988079071
+        },
+        "SnakeCurve": {
+          "image": "C:\\Users\\yasht\\snake-sim\\src\\main\\resources\\img\\snake_curve.png",
+          "length": 0.699999988079071,
+          "width": 0.699999988079071
+        },
+        "SnakeHead": {
+          "image": "C:\\Users\\yasht\\snake-sim\\src\\main\\resources\\img\\snake_head.png",
+          "length": 0.699999988079071,
+          "width": 0.699999988079071
+        },
+        "SnakeTail": {
+          "image": "C:\\Users\\yasht\\snake-sim\\src\\main\\resources\\img\\snake_tail.png"
+        },
         "window": {
           "visible": true
         }
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }

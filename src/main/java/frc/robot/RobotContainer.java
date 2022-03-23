@@ -15,8 +15,6 @@ public class RobotContainer {
 
   private final Joystick joystick = new Joystick(0);
 
-  private final SnakeCommand snakeCmd = new SnakeCommand(field, joystick);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -29,6 +27,6 @@ public class RobotContainer {
   }
 
   public Command getTeleopCommand() {
-    return snakeCmd;
+    return new SnakeCommand(field, joystick);
   }
 }

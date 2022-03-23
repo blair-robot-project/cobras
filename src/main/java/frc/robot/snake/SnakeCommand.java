@@ -22,6 +22,7 @@ import static frc.robot.Constants.*;
 /** An example command that uses an example subsystem. */
 public class SnakeCommand extends CommandBase {
   private Piece head;
+  private Piece tail;
   private Direction currDir;
   private Coord apple;
   private double lastTime = Double.NaN;
@@ -45,8 +46,11 @@ public class SnakeCommand extends CommandBase {
     this.head = new Piece(
         new Coord(FIELD_WIDTH / 2, FIELD_HEIGHT / 2),
         Direction.RIGHT);
+    this.tail = new Piece(
+        new Coord(FIELD_WIDTH / 2 - 1, FIELD_HEIGHT / 2),
+        Direction.RIGHT);
     this.apple = newApple();
-    currDir = head.dir;
+    this.currDir = head.dir;
 
     // Get that pesky robot out of sight
     field.setRobotPose(new Pose2d(new Translation2d(-9, -9), new Rotation2d()));
@@ -60,19 +64,26 @@ public class SnakeCommand extends CommandBase {
     currDir = newDir.filter(dir -> !dir.opposite(currDir)).orElse(currDir);
 
     this.redraw();
-    
+
     // Update elements after a pause
     if (Double.isNaN(lastTime) || currTime - lastTime > PAUSE) {
       this.lastTime = currTime;
 
       body.add(0, head);
-      
+
       this.head = head.move(currDir);
 
       if (apple.equals(head.pos)) {
         this.apple = newApple();
       } else {
-        body.remove(body.size() - 1);
+        // Remove the last piece to give the illusion of motion
+        var last = body.remove(body.size() - 1);
+        // Make the tail follow the last piece
+        if (body.isEmpty()) {
+          this.tail = new Piece(last.pos, head.dir);
+        } else {
+          this.tail = new Piece(last.pos, body.get(body.size() - 1).dir);
+        }
       }
     }
   }
@@ -82,15 +93,37 @@ public class SnakeCommand extends CommandBase {
    */
   private void redraw() {
     field.getObject(HEAD_NAME).setPose(head.getPose());
+    field.getObject(TAIL_NAME).setPose(tail.getPose());
     field
-      .getObject(APPLE_NAME)
-      .setPose(SnakeGame.toPose(apple, Direction.RIGHT));
-    field
-        .getObject(BODY_NAME)
-        .setPoses(
-            body.stream()
-                .map(Piece::getPose)
-                .collect(Collectors.toList()));
+        .getObject(APPLE_NAME)
+        .setPose(new Piece(apple, Direction.RIGHT).getPose());
+
+    var bodyPoses = new ArrayList<Pose2d>();
+    var curvePoses = new ArrayList<Pose2d>();
+
+    var prev = head;
+    for (var piece : body) {
+      bodyPoses.add(piece.getPose());
+      if (prev.dir != piece.dir) {
+        // Draw a curvy part to make it look smoother
+        double prevAngle = prev.dir.angle;
+        double newAngle = piece.dir.angle;
+        double curveAngle;
+        if (prevAngle == 0 && newAngle == 270 || prevAngle == 90 && newAngle == 180) {
+          curveAngle = 0;
+        } else if (prevAngle == 90 && newAngle == 0 || prevAngle == 180 && newAngle == 270) {
+          curveAngle = 90;
+        } else if (prevAngle == 0 && newAngle == 90 || prevAngle == 270 && newAngle == 180) {
+          curveAngle = 270;
+        } else {
+          curveAngle = 180;
+        }
+        curvePoses.add(Piece.getPose(piece.pos, curveAngle));
+      }
+      prev = piece;
+    }
+    field.getObject(CURVE_NAME).setPoses(curvePoses);
+    field.getObject(BODY_NAME).setPoses(bodyPoses);
   }
 
   // Called once the command ends or is interrupted.
@@ -135,6 +168,17 @@ public class SnakeCommand extends CommandBase {
       default:
         return Optional.empty();
     }
+  }
+
+  /**
+   * Check if {@code dir1} and {@code dir2} are both in the set {{@code wanted1},
+   * {@code wanted2}}.
+   * This is an inelegant but handy method to check if two angles are opposite
+   * each other or
+   * which quadrant two angles enclose.
+   */
+  private boolean bothIn(Direction dir1, Direction dir2, Direction wanted1, Direction wanted2) {
+    return (dir1 == wanted1 && dir2 == wanted2) || (dir1 == wanted2 && dir2 == wanted1);
   }
 
   // Returns true when the command should end.

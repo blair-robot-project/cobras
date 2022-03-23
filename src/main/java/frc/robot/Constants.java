@@ -16,14 +16,31 @@ public final class Constants {
   public static final double BLOCK_SIZE = 0.7;
 
   public static final int FIELD_WIDTH = 20;
-  public static final int FIELD_HEIGHT = 20;
+  public static final int FIELD_HEIGHT = 10;
 
   /**
    * How many seconds the game should pause before moving
    */
   public static final double PAUSE = 0.23;
 
+  /**
+   * The name for the head pose in Field2d
+   */
   public static final String HEAD_NAME = "SnakeHead";
+  /**
+   * The name for the body poses in Field2d
+   */
   public static final String BODY_NAME = "SnakeBody";
+  /**
+   * The name for the tail pose in Field2d
+   */
+  public static final String TAIL_NAME = "SnakeTail";
+  /**
+   * The name for the curve poses in Field2d
+   */
+  public static final String CURVE_NAME = "SnakeCurve";
+  /**
+   * The name for the apple pose in Field2d
+   */
   public static final String APPLE_NAME = "Apple";
 }

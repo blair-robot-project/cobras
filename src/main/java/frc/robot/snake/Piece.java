@@ -27,9 +27,16 @@ public class Piece {
    * Get the pose corresponding to this piece's position and direction
    */
   public Pose2d getPose() {
+    return Piece.getPose(pos, dir.angle);
+  }
+
+  /**
+   * Get the pose corresponding to a piece's position and direction
+   */
+  public static Pose2d getPose(Coord pos, double angle) {
     return new Pose2d(
       new Translation2d(pos.x * Constants.BLOCK_SIZE, pos.y * Constants.BLOCK_SIZE),
-      Rotation2d.fromDegrees(dir.angle));
+      Rotation2d.fromDegrees(angle));
   }
 
   /**
